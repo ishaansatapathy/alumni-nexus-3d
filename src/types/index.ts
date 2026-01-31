@@ -92,6 +92,60 @@ export interface MentorshipRequest {
   acceptedAt?: Date;
 }
 
+// Paid Mentorship Sessions
+export type SessionStatus = 'scheduled' | 'completed' | 'cancelled' | 'no-show';
+export type PaymentStatus = 'pending' | 'completed' | 'refunded' | 'failed';
+
+export interface MentorProfile {
+  id: string;
+  userId: string;
+  title: string; // CEO, CMO, CTO, VP Engineering, etc.
+  company: string;
+  yearsOfExperience: number;
+  expertise: string[]; // Areas of expertise
+  hourlyRate: number; // in USD
+  bio: string;
+  availability: TimeSlot[];
+  rating: number; // Average rating
+  totalSessions: number;
+  isVerified: boolean;
+  createdAt: Date;
+}
+
+export interface TimeSlot {
+  dayOfWeek: number; // 0-6 (Sunday-Saturday)
+  startTime: string; // HH:MM format
+  endTime: string;
+  isAvailable: boolean;
+}
+
+export interface MentorshipSession {
+  id: string;
+  mentorId: string;
+  studentId: string;
+  scheduledAt: Date;
+  duration: number; // in minutes (usually 60)
+  topic: string;
+  description?: string;
+  meetingLink?: string;
+  status: SessionStatus;
+  payment: SessionPayment;
+  rating?: number;
+  feedback?: string;
+  createdAt: Date;
+}
+
+export interface SessionPayment {
+  id: string;
+  sessionId: string;
+  amount: number;
+  currency: string;
+  status: PaymentStatus;
+  paymentMethod?: string;
+  transactionId?: string;
+  paidAt?: Date;
+}
+
 // Interview Experiences
 export type InterviewDifficulty = 'easy' | 'medium' | 'hard';
 export type InterviewResult = 'offer' | 'rejected' | 'pending' | 'withdrawn';

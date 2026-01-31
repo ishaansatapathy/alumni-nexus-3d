@@ -7,9 +7,12 @@ import {
   Building2, Calendar, User, ChevronRight, Plus
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 export default function InterviewExperiencesPage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [likedIds, setLikedIds] = useState<number[]>([]);
+  const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
 
   const experiences = [
     {
@@ -97,6 +100,37 @@ export default function InterviewExperiencesPage() {
     }
   };
 
+  const handleLike = (id: number, company: string) => {
+    if (likedIds.includes(id)) {
+      setLikedIds(likedIds.filter(expId => expId !== id));
+      toast.success(`Removed like from ${company} experience`);
+    } else {
+      setLikedIds([...likedIds, id]);
+      toast.success(`Liked ${company} interview experience!`);
+    }
+  };
+
+  const handleShareExperience = () => {
+    toast.success('Share Experience dialog would open here');
+  };
+
+  const handleCompanyFilter = (company: string) => {
+    setSelectedCompany(selectedCompany === company ? null : company);
+    toast.info(selectedCompany === company ? 'Filter cleared' : `Filtering by ${company}`);
+  };
+
+  const handleReadMore = (company: string, role: string) => {
+    toast.info(`Opening full interview experience for ${role} at ${company}`);
+  };
+
+  const filteredExperiences = experiences.filter(exp => {
+    const matchesSearch = 
+      exp.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      exp.role.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCompany = !selectedCompany || exp.company === selectedCompany;
+    return matchesSearch && matchesCompany;
+  });
+
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
@@ -105,7 +139,7 @@ export default function InterviewExperiencesPage() {
           <h1 className="text-3xl font-bold mb-2">Interview Experiences</h1>
           <p className="text-muted-foreground">Learn from real interview stories shared by the community</p>
         </div>
-        <Button className="btn-glow">
+        <Button className="btn-glow" onClick={handleShareExperience}>
           <Plus className="w-4 h-4 mr-2" />
           Share Experience
         </Button>
@@ -133,7 +167,13 @@ export default function InterviewExperiencesPage() {
         {['Google', 'Meta', 'Amazon', 'Apple', 'Microsoft', 'Netflix'].map((company) => (
           <button
             key={company}
-            className="px-4 py-2 rounded-full bg-secondary/50 text-sm hover:bg-secondary transition-colors"
+            onClick={() => handleCompanyFilter(company)}
+            className={cn(
+              "px-4 py-2 rounded-full text-sm transition-colors",
+              selectedCompany === company 
+                ? "bg-primary text-primary-foreground" 
+                : "bg-secondary/50 hover:bg-secondary"
+            )}
           >
             {company}
           </button>
@@ -142,8 +182,8 @@ export default function InterviewExperiencesPage() {
 
       {/* Experiences List */}
       <div className="space-y-4">
-        {experiences.map((exp) => (
-          <GlassCard key={exp.id} hover className="p-6 cursor-pointer group">
+        {filteredExperiences.map((exp) => (
+          <GlassCard key={exp.id} hover className="p-6 cursor-pointer group" onClick={() => handleReadMore(exp.company, exp.role)}>
             <div className="flex items-start gap-6">
               {/* Company Logo Placeholder */}
               <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
@@ -188,10 +228,19 @@ export default function InterviewExperiencesPage() {
                       <Eye className="w-4 h-4" />
                       {exp.views}
                     </span>
-                    <span className="flex items-center gap-1">
-                      <ThumbsUp className="w-4 h-4" />
-                      {exp.likes}
-                    </span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleLike(exp.id, exp.company);
+                      }}
+                      className={cn(
+                        "flex items-center gap-1 hover:text-primary transition-colors",
+                        likedIds.includes(exp.id) && "text-primary"
+                      )}
+                    >
+                      <ThumbsUp className={cn("w-4 h-4", likedIds.includes(exp.id) && "fill-primary")} />
+                      {exp.likes + (likedIds.includes(exp.id) ? 1 : 0)}
+                    </button>
                     <span className="flex items-center gap-1">
                       <MessageSquare className="w-4 h-4" />
                       {exp.comments}

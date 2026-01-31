@@ -11,24 +11,24 @@ export default function ProfilePage() {
   
   // Mock user data
   const user = {
-    name: 'John Doe',
+    name: 'Ishaan Satapathy',
     role: 'student',
-    headline: 'Computer Science Student | Aspiring Software Engineer',
-    location: 'San Francisco, CA',
-    company: 'Stanford University',
-    graduationYear: 2025,
-    email: 'john.doe@stanford.edu',
-    linkedin: 'linkedin.com/in/johndoe',
-    github: 'github.com/johndoe',
-    bio: 'Passionate about building products that make a difference. Currently exploring machine learning and distributed systems. Looking for internship opportunities in software engineering.',
-    skills: ['Python', 'JavaScript', 'React', 'Machine Learning', 'System Design', 'AWS'],
+    headline: 'Computer Science Student | Full-Stack Developer',
+    location: 'Bengaluru, Karnataka, India',
+    company: 'Dayananda Sagar College of Engineering',
+    graduationYear: 2026,
+    email: 'ishaan.satapathy@dsce.edu.in',
+    linkedin: 'linkedin.com/in/ishaan-satapathy',
+    github: 'github.com/ishaansatapathy',
+    bio: 'Focused on building scalable web apps and intuitive user experiences. Currently exploring cloud-native architectures and data-driven product development. Open to internships in software engineering and product roles.',
+    skills: ['TypeScript', 'React', 'Node.js', 'PostgreSQL', 'AWS', 'System Design'],
     achievements: [
-      { title: 'Dean\'s List', year: '2023' },
-      { title: 'Hackathon Winner', year: '2023' },
-      { title: 'Research Assistant', year: '2022' },
+      { title: 'College Hackathon Finalist', year: '2024' },
+      { title: 'Open Source Contributor', year: '2024' },
+      { title: 'Research Intern', year: '2023' },
     ],
-    connections: 156,
-    mentoringSessions: 3,
+    connections: 132,
+    mentoringSessions: 2,
   };
 
   return (

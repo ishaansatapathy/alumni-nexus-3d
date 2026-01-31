@@ -27,9 +27,10 @@ interface NavItem {
 const navItems: NavItem[] = [
   { label: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard size={20} /> },
   { label: 'Opportunities', href: '/opportunities', icon: <Briefcase size={20} /> },
+  { label: 'Connect', href: '/connect', icon: <Users size={20} /> },
   { label: 'Referrals', href: '/referrals', icon: <Network size={20} /> },
   { label: 'Interview Exp.', href: '/interview-experiences', icon: <FileText size={20} /> },
-  { label: 'Mentorship', href: '/opportunities/mentorship', icon: <GraduationCap size={20} /> },
+  { label: 'Mentorship', href: '/mentorship', icon: <GraduationCap size={20} /> },
   { label: 'Analytics', href: '/analytics', icon: <BarChart3 size={20} />, roles: ['admin'] },
   { label: 'Verify Alumni', href: '/admin/verify', icon: <Award size={20} />, roles: ['admin'] },
   { label: 'Users', href: '/admin/users', icon: <Users size={20} />, roles: ['admin'] },
@@ -115,7 +116,7 @@ export function Sidebar({ userRole = 'student' }: SidebarProps) {
           <UserCircle size={20} className="text-muted-foreground" />
           {!collapsed && (
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">John Doe</p>
+              <p className="text-sm font-medium truncate">Ishaan</p>
               <p className="text-xs text-muted-foreground capitalize">{userRole}</p>
             </div>
           )}

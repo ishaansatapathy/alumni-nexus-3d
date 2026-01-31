@@ -1,8 +1,13 @@
 import { Link } from 'react-router-dom';
-import { NetworkScene } from '@/components/3d/NetworkScene';
 import { Button } from '@/components/ui/button';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { ArrowRight, Users, Briefcase, GraduationCap, Award, Network, Sparkles } from 'lucide-react';
+import { Hero3D } from '@/components/3d/Hero3D';
+import { motion } from 'framer-motion';
+import { AnimatedCard } from '@/components/ui/AnimatedCard';
+import { ScrollReveal } from '@/components/ui/ScrollReveal';
+import { AnimatedGradient } from '@/components/3d/AnimatedGradient';
+import { GradientText } from '@/components/ui/GradientCard';
 
 export default function HomePage() {
   const features = [
@@ -36,11 +41,11 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="min-h-screen relative">
-      <NetworkScene />
-      
+    <div className="min-h-screen relative bg-background overflow-hidden">
+      <Hero3D />
+      <AnimatedGradient />
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4">
+      <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-background/80 backdrop-blur-sm border-b border-border">  
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
             <div className="w-10 h-10 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center glow-primary">
@@ -75,8 +80,13 @@ export default function HomePage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="min-h-screen flex items-center justify-center px-6 pt-20">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="min-h-screen flex items-center justify-center px-6 pt-20 relative z-10">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="max-w-4xl mx-auto text-center"
+        >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8 animate-fade-in">
             <Sparkles className="w-4 h-4 text-primary" />
             <span className="text-sm text-primary">Connecting 10,000+ Alumni Worldwide</span>
@@ -84,7 +94,9 @@ export default function HomePage() {
           
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight animate-fade-in" style={{ animationDelay: '0.1s' }}>
             Your Professional
-            <span className="block gradient-text">Network Awaits</span>
+            <span className="block">
+              <GradientText>Network Awaits</GradientText>
+            </span>
           </h1>
           
           <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
@@ -109,19 +121,29 @@ export default function HomePage() {
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-20 animate-fade-in" style={{ animationDelay: '0.4s' }}>
             {stats.map((stat, i) => (
-              <GlassCard key={i} className="p-6 text-center">
-                <p className="text-3xl font-bold gradient-text">{stat.value}</p>
-                <p className="text-sm text-muted-foreground mt-1">{stat.label}</p>
-              </GlassCard>
+              <motion.div
+                key={i}
+                className="relative group"
+                whileHover={{ y: -5 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="absolute -inset-[1px] bg-gradient-to-r from-white/20 via-gray-400/20 to-white/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
+                <GlassCard className="p-6 text-center relative">
+                  <p className="text-3xl font-bold">
+                    <GradientText>{stat.value}</GradientText>
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">{stat.label}</p>
+                </GlassCard>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Features Section */}
-      <section className="py-32 px-6 relative">
+      <section className="py-32 px-6 relative z-10">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
+          <ScrollReveal direction="up" className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Everything You Need to
               <span className="gradient-text"> Succeed</span>
@@ -130,22 +152,19 @@ export default function HomePage() {
               A comprehensive platform designed to bridge the gap between students, 
               alumni, and industry professionals.
             </p>
-          </div>
+          </ScrollReveal>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature, i) => (
-              <GlassCard 
-                key={i} 
-                hover 
-                className="p-6 animate-fade-in-up"
-                style={{ animationDelay: `${i * 0.1}s` }}
-              >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-4 text-primary">
-                  {feature.icon}
-                </div>
-                <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-                <p className="text-sm text-muted-foreground">{feature.description}</p>
-              </GlassCard>
+              <ScrollReveal key={i} delay={i * 0.1} direction="up">
+                <AnimatedCard className="p-6 h-full">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-4 text-primary">
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
+                  <p className="text-sm text-muted-foreground">{feature.description}</p>
+                </AnimatedCard>
+              </ScrollReveal>
             ))}
           </div>
         </div>

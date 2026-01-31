@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,10 +9,83 @@ import { cn } from '@/lib/utils';
 
 type UserRole = 'student' | 'alumni';
 
+type CollegeItem = {
+  code: string;
+  name: string;
+  state: string;
+  district: string;
+};
+
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState<UserRole>('student');
+  const [collegeQuery, setCollegeQuery] = useState('');
+  const [collegeOptions, setCollegeOptions] = useState<CollegeItem[]>([]);
+  const [isCollegeOpen, setIsCollegeOpen] = useState(false);
+  const [collegeLoading, setCollegeLoading] = useState(true);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const parseCollegeData = (raw: string) => {
+      const trimmed = raw.trim();
+      if (!trimmed) return [] as CollegeItem[];
+
+      try {
+        const sanitized = trimmed.replace(/^\uFEFF/, '');
+        const parsed = (sanitized.startsWith('[')
+          ? JSON.parse(sanitized)
+          : JSON.parse(`[${sanitized.replace(/,\s*$/, '')}]`)) as Array<Record<string, string>>;
+
+        return parsed
+          .filter((row) => row?.Column2 && row.Column2 !== 'Name')
+          .map((row) => ({
+            code: row['ALL COLLEGE']?.trim() ?? '',
+            name: row.Column2?.trim() ?? '',
+            state: row.Column3?.trim() ?? '',
+            district: row.Column4?.trim() ?? '',
+          }))
+          .filter((row) => row.name);
+      } catch {
+        return [] as CollegeItem[];
+      }
+    };
+
+    fetch('/colleges.json')
+      .then((response) => response.text())
+      .then((text) => {
+        if (!isMounted) return;
+        const parsed = parseCollegeData(text);
+        setCollegeOptions(parsed);
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setCollegeOptions([]);
+      })
+      .finally(() => {
+        if (!isMounted) return;
+        setCollegeLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const filteredColleges = useMemo(() => {
+    const query = collegeQuery.trim().toLowerCase();
+    if (!query) return [] as CollegeItem[];
+
+    return collegeOptions
+      .filter((college) => {
+        const name = college.name.toLowerCase();
+        const state = college.state.toLowerCase();
+        const district = college.district.toLowerCase();
+        return name.includes(query) || state.includes(query) || district.includes(query);
+      })
+      .slice(0, 8);
+  }, [collegeOptions, collegeQuery]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,6 +152,59 @@ export default function RegisterPage() {
                   placeholder="John Doe"
                   className="pl-10 bg-secondary/50 border-border"
                 />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="college">College / University</Label>
+              <div className="relative">
+                <GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Input
+                  id="college"
+                  type="text"
+                  placeholder="Search your college"
+                  className="pl-10 bg-secondary/50 border-border"
+                  value={collegeQuery}
+                  onChange={(e) => {
+                    setCollegeQuery(e.target.value);
+                    setIsCollegeOpen(true);
+                  }}
+                  onFocus={() => setIsCollegeOpen(true)}
+                  onBlur={() => setTimeout(() => setIsCollegeOpen(false), 150)}
+                />
+
+                {isCollegeOpen && (collegeQuery.trim().length > 0 || collegeLoading) && (
+                  <div className="absolute z-20 mt-2 w-full rounded-xl border border-border bg-background/95 backdrop-blur-sm shadow-lg">
+                    {collegeLoading ? (
+                      <div className="px-4 py-3 text-sm text-muted-foreground">Loading colleges...</div>
+                    ) : filteredColleges.length > 0 ? (
+                      <ul className="max-h-64 overflow-y-auto">
+                        {filteredColleges.map((college) => (
+                          <li key={`${college.code}-${college.name}`}>
+                            <button
+                              type="button"
+                              className="w-full px-4 py-3 text-left hover:bg-secondary/50 transition-colors"
+                              onMouseDown={(e) => e.preventDefault()}
+                              onClick={() => {
+                                setCollegeQuery(college.name);
+                                setIsCollegeOpen(false);
+                              }}
+                            >
+                              <p className="text-sm font-medium text-foreground">
+                                {college.name}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                {college.district}{college.district && college.state ? ', ' : ''}{college.state}
+                              </p>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <div className="px-4 py-3 text-sm text-muted-foreground">No matching colleges found.</div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 

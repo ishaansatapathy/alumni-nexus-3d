@@ -17,6 +17,8 @@ import InterviewExperiencesPage from "./pages/InterviewExperiencesPage";
 import ReferralsPage from "./pages/ReferralsPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import ProfilePage from "./pages/ProfilePage";
+import MentorshipPage from "./pages/MentorshipPage";
+import ConnectPage from "./pages/ConnectPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -58,6 +60,8 @@ const App = () => (
             <Route path="/opportunities/mentorship" element={<OpportunitiesPage />} />
             <Route path="/opportunities/jobs" element={<OpportunitiesPage />} />
             <Route path="/opportunities/internships" element={<OpportunitiesPage />} />
+            <Route path="/mentorship" element={<MentorshipPage />} />
+            <Route path="/connect" element={<ConnectPage />} />
             <Route path="/referrals" element={<ReferralsPage />} />
             <Route path="/interview-experiences" element={<InterviewExperiencesPage />} />
             <Route path="/profile/:id" element={<ProfilePage />} />

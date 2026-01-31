@@ -4,16 +4,19 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { 
   Briefcase, GraduationCap, Building2, MapPin, Clock, 
-  Search, Filter, ArrowRight, Star, Bookmark
+  Search, Filter, ArrowRight, Star, Bookmark, BookmarkCheck
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
-type OpportunityType = 'all' | 'jobs' | 'internships' | 'mentorship';
+type OpportunityType = 'all' | 'jobs' | 'internships';
 
 export default function OpportunitiesPage() {
   const [activeTab, setActiveTab] = useState<OpportunityType>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [bookmarkedIds, setBookmarkedIds] = useState<number[]>([]);
+  const [appliedIds, setAppliedIds] = useState<number[]>([]);
 
   const opportunities = [
     {
@@ -22,7 +25,7 @@ export default function OpportunitiesPage() {
       title: 'Senior Software Engineer',
       company: 'Google',
       location: 'Mountain View, CA',
-      salary: '$150k - $200k',
+      salary: '₹1.2Cr - ₹1.6Cr',
       posted: '2 days ago',
       tags: ['Full-time', 'Remote Optional'],
       featured: true,
@@ -33,29 +36,19 @@ export default function OpportunitiesPage() {
       title: 'Product Management Intern',
       company: 'Meta',
       location: 'Menlo Park, CA',
-      salary: '$8k/month',
+      salary: '₹6.5L/month',
       posted: '1 week ago',
       tags: ['Summer 2024', 'On-site'],
       featured: false,
     },
-    {
-      id: 3,
-      type: 'mentorship',
-      title: 'Career Guidance in Tech',
-      company: 'Sarah Chen',
-      location: 'Virtual',
-      salary: 'Free',
-      posted: '3 days ago',
-      tags: ['1-on-1', 'Software Engineering'],
-      featured: true,
-    },
+
     {
       id: 4,
       type: 'job',
       title: 'Data Scientist',
       company: 'Amazon',
       location: 'Seattle, WA',
-      salary: '$130k - $180k',
+      salary: '₹1.1Cr - ₹1.5Cr',
       posted: '5 days ago',
       tags: ['Full-time', 'Hybrid'],
       featured: false,
@@ -66,29 +59,18 @@ export default function OpportunitiesPage() {
       title: 'UX Design Intern',
       company: 'Apple',
       location: 'Cupertino, CA',
-      salary: '$7.5k/month',
+      salary: '₹6L/month',
       posted: '1 day ago',
       tags: ['Fall 2024', 'On-site'],
       featured: false,
     },
-    {
-      id: 6,
-      type: 'mentorship',
-      title: 'Breaking into Finance',
-      company: 'Michael Ross',
-      location: 'Virtual',
-      salary: 'Free',
-      posted: '1 week ago',
-      tags: ['Group Sessions', 'Investment Banking'],
-      featured: false,
-    },
+
   ];
 
   const tabs = [
     { value: 'all', label: 'All', icon: <Briefcase className="w-4 h-4" /> },
     { value: 'jobs', label: 'Jobs', icon: <Building2 className="w-4 h-4" /> },
     { value: 'internships', label: 'Internships', icon: <Clock className="w-4 h-4" /> },
-    { value: 'mentorship', label: 'Mentorship', icon: <GraduationCap className="w-4 h-4" /> },
   ];
 
   const filteredOpportunities = opportunities.filter(opp => {
@@ -102,8 +84,26 @@ export default function OpportunitiesPage() {
     switch (type) {
       case 'job': return <Building2 className="w-5 h-5" />;
       case 'internship': return <Clock className="w-5 h-5" />;
-      case 'mentorship': return <GraduationCap className="w-5 h-5" />;
       default: return <Briefcase className="w-5 h-5" />;
+    }
+  };
+
+  const handleBookmark = (id: number, title: string) => {
+    if (bookmarkedIds.includes(id)) {
+      setBookmarkedIds(bookmarkedIds.filter(oppId => oppId !== id));
+      toast.success(`Removed "${title}" from bookmarks`);
+    } else {
+      setBookmarkedIds([...bookmarkedIds, id]);
+      toast.success(`Bookmarked "${title}"`);
+    }
+  };
+
+  const handleApply = (id: number, title: string, company: string) => {
+    if (appliedIds.includes(id)) {
+      toast.info(`You've already applied to ${title} at ${company}`);
+    } else {
+      setAppliedIds([...appliedIds, id]);
+      toast.success(`Application submitted for ${title} at ${company}!`);
     }
   };
 
@@ -112,7 +112,7 @@ export default function OpportunitiesPage() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold mb-2">Opportunities</h1>
-        <p className="text-muted-foreground">Discover jobs, internships, and mentorship programs</p>
+        <p className="text-muted-foreground">Discover jobs and internships from top companies</p>
       </div>
 
       {/* Search and Filters */}
@@ -164,8 +164,7 @@ export default function OpportunitiesPage() {
               <div className={cn(
                 "w-12 h-12 rounded-xl flex items-center justify-center",
                 opp.type === 'job' && "bg-blue-500/10 text-blue-400",
-                opp.type === 'internship' && "bg-emerald-500/10 text-emerald-400",
-                opp.type === 'mentorship' && "bg-violet-500/10 text-violet-400"
+                opp.type === 'internship' && "bg-emerald-500/10 text-emerald-400"
               )}>
                 {getTypeIcon(opp.type)}
               </div>
@@ -196,11 +195,27 @@ export default function OpportunitiesPage() {
             <div className="flex items-center justify-between pt-4 border-t border-border">
               <span className="text-xs text-muted-foreground">{opp.posted}</span>
               <div className="flex gap-2">
-                <Button size="sm" variant="ghost">
-                  <Bookmark className="w-4 h-4" />
+                <Button 
+                  size="sm" 
+                  variant="ghost"
+                  onClick={() => handleBookmark(opp.id, opp.title)}
+                  className={cn(
+                    bookmarkedIds.includes(opp.id) && "text-primary"
+                  )}
+                >
+                  {bookmarkedIds.includes(opp.id) ? (
+                    <BookmarkCheck className="w-4 h-4" />
+                  ) : (
+                    <Bookmark className="w-4 h-4" />
+                  )}
                 </Button>
-                <Button size="sm">
-                  Apply <ArrowRight className="w-4 h-4 ml-1" />
+                <Button 
+                  size="sm"
+                  onClick={() => handleApply(opp.id, opp.title, opp.company)}
+                  disabled={appliedIds.includes(opp.id)}
+                >
+                  {appliedIds.includes(opp.id) ? 'Applied' : 'Apply'} 
+                  <ArrowRight className="w-4 h-4 ml-1" />
                 </Button>
               </div>
             </div>

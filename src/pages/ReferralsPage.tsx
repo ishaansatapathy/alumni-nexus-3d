@@ -7,10 +7,12 @@ import {
   Building2, User, Calendar, Plus, ArrowRight, Send
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 export default function ReferralsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'browse' | 'my-requests'>('browse');
+  const [requestedIds, setRequestedIds] = useState<number[]>([]);
 
   const referralOpportunities = [
     {
@@ -89,6 +91,15 @@ export default function ReferralsPage() {
       case 'approved': return 'bg-emerald-500/10 text-emerald-400';
       case 'rejected': return 'bg-red-500/10 text-red-400';
       default: return 'bg-muted text-muted-foreground';
+    }
+  };
+
+  const handleRequestReferral = (id: number, company: string, alumni: string) => {
+    if (requestedIds.includes(id)) {
+      toast.info(`You've already requested a referral for ${company}`);
+    } else {
+      setRequestedIds([...requestedIds, id]);
+      toast.success(`Referral request sent to ${alumni} at ${company}!`);
     }
   };
 
@@ -181,10 +192,11 @@ export default function ReferralsPage() {
 
                   <Button 
                     className="w-full" 
-                    disabled={!opp.available}
+                    disabled={!opp.available || requestedIds.includes(opp.id)}
+                    onClick={() => handleRequestReferral(opp.id, opp.company, opp.alumni)}
                   >
                     <Send className="w-4 h-4 mr-2" />
-                    Request Referral
+                    {requestedIds.includes(opp.id) ? 'Requested' : 'Request Referral'}
                   </Button>
                 </div>
               </div>
