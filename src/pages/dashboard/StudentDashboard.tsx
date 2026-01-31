@@ -27,7 +27,7 @@ export default function StudentDashboard() {
     <div className="space-y-8 animate-fade-in">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold mb-2">Welcome back, John! 👋</h1>
+        <h1 className="text-3xl font-bold mb-2">Welcome back, Ishaan! 👋</h1>
         <p className="text-muted-foreground">Here's what's happening with your career journey</p>
       </div>
 
