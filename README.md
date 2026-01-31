@@ -1,42 +1,48 @@
-# Welcome to your Lovable project
+# AlumniNexus - Premium Alumni Networking Platform
 
-## Project info
+## Project Overview
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+A modern alumni networking platform featuring mentorship marketplace, achievement-based connections, referrals, and career opportunities.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- **Dashboard**: Personalized student, alumni, and admin dashboards
+- **Connect**: Achievement-based alumni networking with GitHub, CodeChef, LeetCode criteria
+- **Mentorship**: Premium hourly sessions with industry executives
+- **Opportunities**: Job and internship listings with bookmark/apply features
+- **Referrals**: Request referrals from alumni at top companies
+- **Interview Experiences**: Share and browse interview experiences
+- **3D UI**: Modern 3D components and animations
 
-**Use Lovable**
+## Local Development
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Prerequisites: Node.js & npm - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
 Follow these steps:
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Clone the repository
+git clone https://github.com/ishaansatapathy/alumni-nexus-3d.git
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Navigate to project directory
+cd alumni-nexus-3d
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Editing the Project
+
+**Local Development**
+
+- Clone this repo and edit files in your preferred IDE
+- Push changes to the repository
+- All changes will be reflected immediately
+
+**GitHub Direct Edit**
 
 - Navigate to the desired file(s).
 - Click the "Edit" button (pencil icon) at the top right of the file view.
@@ -50,24 +56,26 @@ npm run dev
 - Click on "New codespace" to launch a new Codespace environment.
 - Edit files directly within the Codespace and commit and push your changes once you're done.
 
-## What technologies are used for this project?
+## Tech Stack
 
 This project is built with:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- **Vite** - Fast build tool and dev server
+- **TypeScript** - Type-safe JavaScript
+- **React** - UI library
+- **Shadcn UI** - Component library
+- **Tailwind CSS** - Utility-first CSS
+- **Framer Motion** - Animations
+- **Three.js** - 3D graphics
+- **React Router** - Client-side routing
+- **TanStack Query** - Data fetching
 
-## How can I deploy this project?
+## Deployment
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Deploy using Vercel, Netlify, or any static hosting service:
 
-## Can I connect a custom domain to my Lovable project?
+```sh
+npm run build
+```
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+The build output will be in the `dist/` directory.
